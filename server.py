@@ -1,6 +1,9 @@
 import socket
+#from database import Database
 PORT = 8181
 
+#load db import Database
+#db = Database('vsmdb',load=True)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(('', PORT))
     print ("socket binded to %s" %(PORT))
@@ -30,6 +33,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     print(columns)
                     if list1[0]=='1' :
                         print('case1')
+                        #db.select(columns,remain[0])
                     elif list1[0]=='2' :
                         print('case2')
                         i = remain.index("@")
@@ -37,3 +41,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         condition = remain[(i + 1):]
                         print(table)
                         print(condition)
+                        #db.select(columns,table[0],condition[0])
