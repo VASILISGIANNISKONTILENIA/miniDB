@@ -1,9 +1,10 @@
 import socket
-#from database import Database
+from database import Database
+import sys
 PORT = 8181
 
 #load db import Database
-#db = Database('vsmdb',load=True)
+db = Database('vsmdb',load=True)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(('', PORT))
     print ("socket binded to %s" %(PORT))
@@ -30,15 +31,30 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     i = list2.index("@")
                     columns = list2[:i]
                     remain = list2[(i + 1):]
+                    if columns == ['*']:
+                        columns = '*'
                     print(columns)
                     if list1[0]=='1' :
                         print('case1')
-                        #db.select(columns,remain[0])
+                        print(remain[0])
+                        print(columns)
+                        try:
+                            db.select(remain[0],columns)
+                        except:
+                            e = sys.exc_info()[1]
+                            print(e)
+                            db.unlock_table('classroom')
                     elif list1[0]=='2' :
                         print('case2')
                         i = remain.index("@")
                         table = remain[:i]
                         condition = remain[(i + 1):]
-                        print(table)
+                        print(table[0])
+                        print(columns)
                         print(condition)
-                        #db.select(columns,table[0],condition[0])
+                        try:
+                            db.select(table[0],columns,condition[0])
+                        except:
+                            e = sys.exc_info()[1]
+                            print(e)
+                            db.unlock_table('classroom')
