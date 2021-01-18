@@ -11,7 +11,8 @@ while True:
     print('Give a SQL Command!')
     while  (not correct):
         uinput = input()
-        pattern = '^select\s(\*|([a-z]([a-z]*[0-9]*)+\s?\,\s?)*[a-z]([a-z]*[0-9]*)+)\sfrom\s([a-z]([a-z]*[0-9]*)+\s?\,\s?)*[a-z]([a-z]*[0-9]*)+(\swhere\s([a-z]([a-z]*[0-9]*)+\.)?[a-z]([a-z]*[0-9]*)+(\s)?(\=|\<|\>|(\<\>)|(\>\=)|(\<\=))(\s)?([a-z]([a-z]*[0-9]*)+\.)?[a-z]([a-z]*[0-9]*)+)?$'
+        uinput = uinput.lower()
+        pattern = '^select\s(\*|([a-z]([a-z]*[0-9]*)+\s?\,\s?)*[a-z]([a-z]*[0-9]*)+)\sfrom\s([a-z]([a-z]*[0-9]*)+\s?\,\s?)*[a-z]([a-z]*[0-9]*)+(\swhere\s([a-z]([a-z]*[0-9]*)+\.)?[a-z]([a-z]*[0-9]*)+(\s)?(\=|\<|\>|(\<\>)|(\>\=)|(\<\=))(\s)?([a-z]([a-z]*[0-9]*)+\.)?([a-z]*[0-9]*)+)?$'
         result = re.match(pattern, uinput)
         if result:
             x = uinput.replace(' ', ',')
@@ -48,6 +49,7 @@ while True:
             tosend += '@,'
         else:
             tosend = tosend + word + ','
+    tosend = tosend[:-1]
     s.sendall(str.encode(tosend))
     data = s.recv(1024)
     if data:
