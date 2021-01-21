@@ -4,7 +4,9 @@ import sys
 PORT = 8181
 
 #Load db import Database
-db = Database('vsmdb',load=True)
+print('Give me the database name:')
+db_name = input()
+db = Database(db_name,load=True)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(('', PORT))
     print ('socket binded to %s' %(PORT))
