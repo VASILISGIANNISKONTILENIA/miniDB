@@ -1,13 +1,13 @@
-import socket
+import socket, pickle
 from database import Database
 import sys
 PORT = 8181
 
-#load db import Database
+#Load db import Database
 db = Database('vsmdb',load=True)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(('', PORT))
-    print ("socket binded to %s" %(PORT))
+    print ('socket binded to %s' %(PORT))
     s.listen(5)
     while True:
         conn, addr = s.accept()
@@ -15,46 +15,49 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print('Connected by', addr)
             while True:
                 data = conn.recv(1000)
-                #Not in use
+                #Check if the client wants to stop the connection
                 if not data or data==b'stop':
+                    conn.sendall('Thank you for accessing our database')
                     conn.close()
                     break
-                #In use
+                #Else start the proccess
                 else:
                     clientinput = str(data.decode())
                     print (clientinput)
-                    conn.sendall(str.encode('thank you'))
-                    print ("---------------")
-                    list1 = clientinput.split(",")
-                    print(list1)
+                    print ('---------------')
+                    #We split the client input for easier checking
+                    list1 = clientinput.split(',')
                     list2 = list1[1:]
-                    i = list2.index("@")
+                    i = list2.index('@')
                     columns = list2[:i]
                     remain = list2[(i + 1):]
                     if columns == ['*']:
                         columns = '*'
-                    print(columns)
+                    #Check which select command the user chose
                     if list1[0]=='1' :
                         print('case1')
-                        print(remain[0])
-                        print(columns)
-                        try:
-                            db.select(remain[0],columns)
-                        except:
-                            e = sys.exc_info()[1]
-                            print(e)
-                            db.unlock_table('classroom')
-                    elif list1[0]=='2' :
+                        utable = db.select(remain[0],columns, return_object = True)
+                        #If there was a table returned, pickle it and then send it
+                        if(bool(utable):
+                            table_string = pickle.dumps(utable)
+                            conn.sendall(table_string)
+                            print('The table has been sent')
+                        #Else send a message that there was no table found
+                        else:
+                            message_string = pickle.dumps('There was no table found')
+                            conn.sendall(message_string)
+                    elif list1[0]=='2':
                         print('case2')
-                        i = remain.index("@")
+                        i = remain.index('@')
                         table = remain[:i]
                         condition = remain[(i + 1):]
-                        print(table[0])
-                        print(columns)
-                        print(condition)
-                        try:
-                            db.select(table[0],columns,condition[0])
-                        except:
-                            e = sys.exc_info()[1]
-                            print(e)
-                            db.unlock_table('classroom')
+                        utable = db.select(table[0],columns,condition[0],return_object = True)
+                        #If there was a table returned, pickle it and then send it
+                        if(bool(utable):
+                            table_string = pickle.dumps(utable)
+                            conn.sendall(table_string)
+                            print('The table has been sent')
+                        #Else send a message that there was no table found
+                        else:
+                            message_string = pickle.dumps('There was no table found')
+                            conn.sendall(message_string)
