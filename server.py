@@ -36,28 +36,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     #Check which select command the user chose
                     if list1[0]=='1' :
                         print('case1')
-                        utable = db.select(remain[0],columns, return_object = True)
-                        #If there was a table returned, pickle it and then send it
-                        if(bool(utable):
+                        #Try to find the client requested table from the database
+                        try:
+                            utable = db.select(remain[0],columns, return_object = True)
                             table_string = pickle.dumps(utable)
                             conn.sendall(table_string)
-                            print('The table has been sent')
-                        #Else send a message that there was no table found
-                        else:
-                            message_string = pickle.dumps('There was no table found')
-                            conn.sendall(message_string)
+                            print("The table has been sent")
+                        #If it's not found send the key error to the client
+                        except:
+                            e = sys.exc_info()[1]
+                            print(e)
+                            db.unlock_table('classroom')
+                            error_string = pickle.dumps(e)
+                            conn.sendall(error_string)
+                            print("The error message has been sent")
                     elif list1[0]=='2':
                         print('case2')
                         i = remain.index('@')
                         table = remain[:i]
                         condition = remain[(i + 1):]
-                        utable = db.select(table[0],columns,condition[0],return_object = True)
-                        #If there was a table returned, pickle it and then send it
-                        if(bool(utable):
+                        #Try to find the client requested table from the database
+                        try:
+                            utable = db.select(table[0],columns,condition[0],return_object = True)
                             table_string = pickle.dumps(utable)
                             conn.sendall(table_string)
-                            print('The table has been sent')
-                        #Else send a message that there was no table found
-                        else:
-                            message_string = pickle.dumps('There was no table found')
-                            conn.sendall(message_string)
+                            print("The table has been sent")
+                        #If it's not found send the key error to the client
+                        except:
+                            e = sys.exc_info()[1]
+                            print(e)
+                            db.unlock_table('classroom')
+                            error_string = pickle.dumps(e)
+                            conn.sendall(error_string)
+                            print("The error message has been sent")
