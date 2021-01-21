@@ -17,7 +17,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 data = conn.recv(1000)
                 #Check if the client wants to stop the connection
                 if not data or data==b'stop':
-                    conn.sendall('Thank you for accessing our database')
+                    message_string = pickle.dumps('Thank you for accessing our database')
+                    conn.sendall(message_string)
+                    print('Closing the connection')
                     conn.close()
                     break
                 #Else start the proccess
