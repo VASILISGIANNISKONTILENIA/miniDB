@@ -71,7 +71,7 @@ while True:
         print('Received a table:')
         data_variable.show()
     #If it's an error type that there was an error found in the database and type the error keyword
-    elif isinstance(data_variable,KeyError):
+    elif isinstance(data_variable,BaseException):
         print('It seems there was a problem pulling the data from the database.')
         print(data_variable)
     #Else type the message we received from the server
