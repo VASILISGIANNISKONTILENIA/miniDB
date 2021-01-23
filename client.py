@@ -23,6 +23,7 @@ while True:
         if result:
             x = uinput.replace(' ', ',')
             x = x.replace(',,', ',')
+            x = x.replace(',,', ',')
             words = x.split(',')
             wrongex = False;
             for r in reserved:
