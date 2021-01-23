@@ -63,7 +63,7 @@ while True:
         for word in words:
             if (word == 'where'):
                 existswhere = True
-        #cas2
+        #case2
         if existswhere:
             tosend += '2,'
         #case1
